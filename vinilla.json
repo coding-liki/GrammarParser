@@ -1,0 +1,10 @@
+{
+  "name": "GrammarParser",
+  "vendor":"CodingLiki",
+  "description":"Парсер файлов грамматик и токенов",
+  "version":"0.1",
+  "repo_url":"https://github.com/coding-liki/GrammarParser.git",
+  "dependencies": [
+    "CodingLiki/OoAutoloader"
+  ]
+}
