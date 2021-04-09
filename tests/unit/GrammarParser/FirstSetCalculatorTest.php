@@ -3,22 +3,22 @@ declare(strict_types=1);
 
 namespace GrammarParser;
 
+use Codeception\Test\Unit;
 use CodingLiki\GrammarParser\Calculators\FirstSetCalculator;
 use CodingLiki\GrammarParser\GrammarRuleParser;
-use CodingLiki\GrammarParser\Rule;
 use CodingLiki\GrammarParser\RulesHelper;
-use PHPUnit\Framework\TestCase;
 
-class FirstSetCalculatorTest extends TestCase
+class FirstSetCalculatorTest extends Unit
 {
     /**
      * @dataProvider calculateProvider
+     * @param string $rulesScript
      * @param string $ruleName
-     * @param array $rules
-     * @param array $expectedSet
+     * @param string[] $expectedSet
      */
-    public function testCalculate(string $ruleName, array $rules, array $expectedSet)
+    public function testCalculate(string $rulesScript, string $ruleName, array $expectedSet): void
     {
+        $rules = GrammarRuleParser::parse($rulesScript);
         if(!empty($rules)) {
             array_unshift($rules, RulesHelper::buildRootRule($rules));
         }
@@ -33,53 +33,86 @@ class FirstSetCalculatorTest extends TestCase
     {
         return [
             'one simple rule' => [
+                'A: a;',
                 'A',
-                [
-                    new Rule('A', ['a']),
-                ],
                 [
                     'a'
                 ]
             ],
             'one rule and first for terminal' => [
+                'A: a;',
                 'a',
-                [
-                    new Rule('A', ['a']),
-                ],
                 [
                     'a'
                 ]
             ],
             'two simple rules' => [
-                'A',
-                GrammarRuleParser::parse('
+                '
                 A: a;
                 A: b c;
-                '),
+                ',
+                'A',
                 ['a', 'b']
             ],
             'five complex rules' => [
-                'A',
-                GrammarRuleParser::parse('
+                '
                 A: B | C;
                 B: k;
                 C: o;
                 A: a;
                 A: b c; 
-                '),
+                ',
+                'A',
                 ['k', 'o', 'a', 'b']
             ],
             'five complex rules with same firsts' => [
-                'A',
-                GrammarRuleParser::parse('
+                '
                 A: B | C;
                 B: k;
                 C: a n;
                 A: a;
                 A: b c;
-                '),
+                ',
+                'A',
                 ['k', 'a', 'b']
             ],
+            'subrule test' => [
+                '
+                A: 
+                    a b c
+                    | (D | k);
+                D: j;
+                ',
+                'A',
+                ['a','j','k']
+            ],
+            '*  test' => [
+                '
+                A: 
+                    a* b c | D;
+                D: j;
+                ',
+                'A',
+                ['a','b','j']
+            ],
+            '? test' => [
+                '
+                A: p? c;',
+                'A',
+                ['p', 'c']
+            ],
+            '? with * test' => [
+                '
+                A: p? c* d;',
+                'A',
+                ['p', 'c', 'd']
+            ],
+            '? with + test' => [
+                '
+                A: p? c+ d;',
+                'A',
+                ['p', 'c']
+            ]
         ];
     }
 }

@@ -1,14 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Rule;
+namespace CodingLiki\GrammarParser\Rule;
 
 class RulePart
 {
-    public const TYPE_MAY_BE_ONCE = '?';
     public const TYPE_MAY_BE_ONCE_OR_MORE = '*';
-    public const TYPE_SHOULD_BE_ONCE_OR_MORE = '+';
-
+    public const TYPE_NORMAL    = '';
     public function __construct(private string $data, private string $type)
     {
     }

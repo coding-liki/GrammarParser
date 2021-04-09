@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace CodingLiki\GrammarParser;
 
+use CodingLiki\GrammarParser\Rule\Rule;
+use CodingLiki\GrammarParser\Rule\RulePart;
+
 class RulesHelper
 {
     public static array $rulesByName = [];
@@ -21,7 +24,7 @@ class RulesHelper
         if (!isset(self::$rulesByName[$name])) {
             self::$rulesByName[$name] = [];
             foreach ($rules as $rule) {
-                if ($rule->name === $name) {
+                if ($rule->getName() === $name) {
                     self::$rulesByName[$name][] = $rule;
                 }
             }
@@ -36,10 +39,12 @@ class RulesHelper
      */
     public static function buildRootRule(array $rules): Rule
     {
-        return new Rule(self::ROOT_RULE_NAME, [$rules[0]->name]);
+        $rule = new Rule(self::ROOT_RULE_NAME, []);
+        $rule->addPart(new RulePart($rules[0]->getName(), RulePart::TYPE_NORMAL));
+        return $rule;
     }
 
-    public static function cleanCache()
+    public static function cleanCache(): void
     {
         self::$rulesByName = [];
     }

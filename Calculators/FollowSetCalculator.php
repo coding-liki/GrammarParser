@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace CodingLiki\GrammarParser\Calculators;
 
+use CodingLiki\GrammarParser\Rule\Rule;
+use CodingLiki\GrammarParser\Rule\RulePart;
+use CodingLiki\GrammarParser\RulesHelper;
+
 class FollowSetCalculator
 {
 
@@ -19,8 +23,6 @@ class FollowSetCalculator
     {
         $this->firstSetCalculator = new FirstSetCalculator($this->rules);
     }
-
-
 
     public function calculate(string $name, bool $root = true): array
     {
@@ -51,23 +53,34 @@ class FollowSetCalculator
 
         $follow = [];
         foreach ($this->rules as $rule) {
-            $indexes = array_keys($rule->parts, $name);
+            $allParts = $rule->getParts();
+            $parts = $rule->findPartsByName($name);
+            $indexes = array_keys($parts);
             if(!empty($indexes)){
                 foreach ($indexes as $index){
-                    if(isset($rule->parts[$index + 1])){
-                        $followPart = $rule->parts[$index + 1];
-                        $firstSet = $this->firstSetCalculator->calculate($followPart);
+                    $offset = 1;
+
+                    $followPart = $allParts[$index + $offset] ?? null;
+                    while($followPart !== null && $followPart->getType() !== RulePart::TYPE_NORMAL ){
+                        $firstSet = $this->firstSetCalculator->calculate($followPart->getData());
                         array_push($follow, ...$firstSet);
-                    } else {
+                        $offset++;
+                        $followPart = $allParts[$index + $offset] ?? null;
+                    }
+                    if($followPart === null){
                         if(!in_array($rule->__toString(), $this->visitedRules[$this->currentName], true)){
                             $this->visitedRules[$this->currentName][] = $rule->__toString();
-                            $nextFollow = $this->calculate($rule->name, false);
+                            $nextFollow = $this->calculate($rule->getName(), false);
                         } else {
                             $nextFollow = [];
                         }
 
                         array_push($follow, ...$nextFollow);
+                    } else {
+                        $firstSet = $this->firstSetCalculator->calculate($followPart->getData());
+                        array_push($follow, ...$firstSet);
                     }
+
                 }
             }
         }

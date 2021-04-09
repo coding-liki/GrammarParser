@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace CodingLiki\GrammarParser\Calculators;
 
+use CodingLiki\GrammarParser\Rule\Rule;
+use CodingLiki\GrammarParser\Rule\RulePart;
+
 class FirstSetCalculator
 {
     /**
@@ -54,9 +57,16 @@ class FirstSetCalculator
         $set = [];
 
         foreach ($this->rules as $rule) {
-            if ($rule->name === $ruleName) {
-                $nextSet = $this->calculate($rule->parts[0]);
+            if ($rule->getName() === $ruleName) {
+                $parts = $rule->getParts();
+                $part = array_shift($parts);
+                $nextSet = $this->calculate($part->getData());
                 array_push($set, ...$nextSet);
+                while ($part->getType() === RulePart::TYPE_MAY_BE_ONCE_OR_MORE){
+                    $part = array_shift($parts);
+                    $nextSet = $this->calculate($part->getData());
+                    array_push($set, ...$nextSet);
+                }
             }
         }
 
