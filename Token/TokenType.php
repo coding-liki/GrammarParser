@@ -1,0 +1,27 @@
+<?php
+declare(strict_types=1);
+
+namespace CodingLiki\GrammarParser\Token;
+
+class TokenType
+{
+    public function __construct(private string $name, private string $regex)
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRegex(): string
+    {
+        return $this->regex;
+    }
+}

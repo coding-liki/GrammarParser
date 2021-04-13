@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace GrammarParser;
 
+use Codeception\Test\Unit;
 use CodingLiki\GrammarParser\Calculators\FollowSetCalculator;
 use CodingLiki\GrammarParser\GrammarRuleParser;
 use CodingLiki\GrammarParser\RulesHelper;
-use PHPUnit\Framework\TestCase;
 
-class FollowSetCalculatorTest extends TestCase
+class FollowSetCalculatorTest extends Unit
 {
 
     /**

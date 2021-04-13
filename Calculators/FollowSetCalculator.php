@@ -15,6 +15,7 @@ class FollowSetCalculator
     private array $visitedRules = [];
     private string $currentName = '';
     private FirstSetCalculator $firstSetCalculator;
+
     /**
      * FollowSetCalculator constructor.
      * @param Rule[] $rules
