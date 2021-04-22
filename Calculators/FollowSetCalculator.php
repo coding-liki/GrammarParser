@@ -61,6 +61,10 @@ class FollowSetCalculator
                 foreach ($indexes as $index){
                     $offset = 1;
 
+                    if( $allParts[$index]->getType() !== RulePart::TYPE_NORMAL){
+                        $firstSet = $this->firstSetCalculator->calculate($allParts[$index]->getData());
+                        array_push($follow, ...$firstSet);
+                    }
                     $followPart = $allParts[$index + $offset] ?? null;
                     while($followPart !== null && $followPart->getType() !== RulePart::TYPE_NORMAL ){
                         $firstSet = $this->firstSetCalculator->calculate($followPart->getData());
