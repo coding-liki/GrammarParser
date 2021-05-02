@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace CodingLiki\GrammarParser\Calculators;
 
 use CodingLiki\GrammarParser\Rule\Rule;
-use CodingLiki\GrammarParser\Rule\RulePart;
 
 class FirstSetCalculator
 {
@@ -19,7 +18,6 @@ class FirstSetCalculator
      */
     public function __construct(private array $rules)
     {
-
     }
 
     /**
@@ -62,16 +60,9 @@ class FirstSetCalculator
                 $part = array_shift($parts);
                 $nextSet = $this->calculate($part->getData());
                 array_push($set, ...$nextSet);
-                while ($part->getType() === RulePart::TYPE_MUST_BE_ONCE_OR_MORE){
-                    $part = array_shift($parts);
-                    $nextSet = $this->calculate($part->getData());
-                    array_push($set, ...$nextSet);
-                }
             }
         }
 
         $this->normalizeAndSaveSet($set, $ruleName);
     }
-
-
 }

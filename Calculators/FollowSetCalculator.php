@@ -27,11 +27,11 @@ class FollowSetCalculator
 
     public function calculate(string $name, bool $root = true): array
     {
-        if($root){
+        if ($root) {
             $this->currentName = $name;
         }
 
-        if(!isset($this->visitedRules[$name])){
+        if (!isset($this->visitedRules[$name])) {
             $this->visitedRules[$name] = [];
         }
 
@@ -44,7 +44,12 @@ class FollowSetCalculator
 
     private function calculateSet(string $name): array
     {
-        if($name === RulesHelper::ROOT_RULE_NAME){
+        return $this->checkTrivialFollow($name) ?? $this->calculateFollow($name);
+    }
+
+    private function checkTrivialFollow(string $name): ?array
+    {
+        if ($name === RulesHelper::ROOT_RULE_NAME) {
             return ['$'];
         }
 
@@ -52,42 +57,40 @@ class FollowSetCalculator
             return [];
         }
 
+        return null;
+    }
+
+    private function calculateFollow(string $name): array
+    {
         $follow = [];
         foreach ($this->rules as $rule) {
-            $allParts = $rule->getParts();
-            $parts = $rule->findPartsByName($name);
-            $indexes = array_keys($parts);
-            if(!empty($indexes)){
-                foreach ($indexes as $index){
-                    $offset = 1;
+            $nextFollow = $this->calculateForRule($rule, $name);
+            array_push($follow, ...$nextFollow);
+        }
 
-                    if( $allParts[$index]->getType() !== RulePart::TYPE_NORMAL){
-                        $firstSet = $this->firstSetCalculator->calculate($allParts[$index]->getData());
-                        array_push($follow, ...$firstSet);
-                    }
-                    $followPart = $allParts[$index + $offset] ?? null;
-                    while($followPart !== null && $followPart->getType() !== RulePart::TYPE_NORMAL ){
-                        $firstSet = $this->firstSetCalculator->calculate($followPart->getData());
-                        array_push($follow, ...$firstSet);
-                        $offset++;
-                        $followPart = $allParts[$index + $offset] ?? null;
-                    }
-                    if($followPart === null){
-                        if(!in_array($rule->__toString(), $this->visitedRules[$this->currentName], true)){
-                            $this->visitedRules[$this->currentName][] = $rule->__toString();
-                            $nextFollow = $this->calculate($rule->getName(), false);
-                        } else {
-                            $nextFollow = [];
-                        }
+        return $follow;
+    }
 
-                        array_push($follow, ...$nextFollow);
-                    } else {
-                        $firstSet = $this->firstSetCalculator->calculate($followPart->getData());
-                        array_push($follow, ...$firstSet);
-                    }
+    private function calculateForRule(Rule $rule, string $name): array
+    {
+        $follow = [];
+        $parts = $rule->findPartsByName($name);
+        $lastRuleIndex = count($rule->getParts()) - 1;
 
-                }
+        foreach ($parts as $index => $part) {
+            if ($part->getType() === RulePart::TYPE_MUST_BE_ONCE_OR_MORE) {
+                $nextFollow = $this->firstSetCalculator->calculate($part->getData());
+                empty($nextFollow) ?: array_push($follow, ...$nextFollow);
             }
+
+            if ($index < $lastRuleIndex) {
+                $nextPart = $rule->getParts()[$index + 1]->getData();
+                $nextFollow = $this->firstSetCalculator->calculate($nextPart);
+            } else {
+                $nextFollow = $this->calculate($rule->getName(), false);
+            }
+
+            empty($nextFollow) ?: array_push($follow, ...$nextFollow);
         }
 
         return $follow;

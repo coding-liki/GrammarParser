@@ -105,7 +105,7 @@ class FirstSetCalculatorTest extends Unit
                 '
                 A: p? c* d;',
                 'A',
-                ['p', 'c', 'd']
+                ['p', 'd', 'c']
             ],
             '? with + test' => [
                 '
