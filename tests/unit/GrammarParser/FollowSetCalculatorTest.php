@@ -37,7 +37,7 @@ class FollowSetCalculatorTest extends Unit
                 'a',
                 []
             ],
-            'test may be once' => [
+            'test may be once 1' => [
                 '
                 A: a B*;
                 B: b (s* c)+;
@@ -45,7 +45,7 @@ class FollowSetCalculatorTest extends Unit
                 'B',
                 ['b', '$']
             ],
-            'test may be once' => [
+            'test may be once 2' => [
                 '
                 A: a B*;
                 B: b (s* c)+;
