@@ -45,6 +45,14 @@ class FollowSetCalculatorTest extends Unit
                 'B',
                 ['b','$']
             ],
+            'test may be once' => [
+                '
+                A: a B*;
+                B: b (s* c)+;
+                ',
+                'B_subrule_1',
+                ['b','s','c','$']
+            ],
             'calcTestCase' => [
                 '
                 expression: 

@@ -25,15 +25,17 @@ class GrammarRuleParser
             $nextRules = self::parseRulesData($rulesData);
             array_push($rules, ...$nextRules);
         }
-        return $rules;
+
+        $filtered = array_values(array_unique($rules));
+
+        print_r($filtered);
+        return $filtered;
     }
 
     private static function normalizeScript(string $rulesScript): string
     {
         $rulesScript = self::removeComments($rulesScript);
-        $rulesScript = trim(preg_replace('/\s+/', ' ', $rulesScript));
-
-        return $rulesScript;
+        return trim(preg_replace('/\s+/', ' ', $rulesScript));
     }
 
     private static function removeComments(string $rulesScript): string
@@ -83,9 +85,9 @@ class GrammarRuleParser
             foreach ($parts as $index => $part) {
                 $lastChar = substr($part, -1);
                 switch ($lastChar) {
-                    case RulePart::TYPE_MAY_BE_ONCE_OR_MORE:
+                    case RulePart::TYPE_MUST_BE_ONCE_OR_MORE:
                         $part = substr($part, 0,-1);
-                        $rule->addPart(new RulePart($part, RulePart::TYPE_MAY_BE_ONCE_OR_MORE));
+                        $rule->addPart(new RulePart($part, RulePart::TYPE_MUST_BE_ONCE_OR_MORE));
                         break;
                     case '?':
                         $part = substr($part, 0,-1);
@@ -94,10 +96,12 @@ class GrammarRuleParser
                         array_splice($new_parts, $index,1);
                         array_unshift($items, implode(' ', $new_parts));
                         break;
-                    case '+':
+                    case '*':
                         $part = substr($part, 0,-1);
-                        $rule->addPart(new RulePart($part, RulePart::TYPE_NORMAL));
-                        $rule->addPart(new RulePart($part, RulePart::TYPE_MAY_BE_ONCE_OR_MORE));
+                        $rule->addPart(new RulePart($part, RulePart::TYPE_MUST_BE_ONCE_OR_MORE));
+                        $new_parts = $parts;
+                        array_splice($new_parts, $index,1);
+                        array_unshift($items, implode(' ', $new_parts));
                         break;
                     default:
 

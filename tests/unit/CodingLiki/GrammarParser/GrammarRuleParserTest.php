@@ -97,10 +97,9 @@ class GrammarRuleParserTest extends Unit
                 [
                     new Rule('test', [
                         new RulePart('a', RulePart::TYPE_NORMAL),
-                        new RulePart('test_subrule_1', RulePart::TYPE_NORMAL),
-                        new RulePart('test_subrule_1', RulePart::TYPE_MAY_BE_ONCE_OR_MORE),
+                        new RulePart('test_subrule_1', RulePart::TYPE_MUST_BE_ONCE_OR_MORE),
                         new RulePart('d', RulePart::TYPE_NORMAL)
-                    ], 'a test_subrule_1 test_subrule_1* d'),
+                    ], 'a test_subrule_1+ d'),
                     new Rule('test_subrule_1', [new RulePart('b', RulePart::TYPE_NORMAL)], 'b'),
                     new Rule('test_subrule_1', [new RulePart('g', RulePart::TYPE_NORMAL)], 'g'),
                 ]
@@ -110,9 +109,13 @@ class GrammarRuleParserTest extends Unit
                 [
                     new Rule('test', [
                         new RulePart('a', RulePart::TYPE_NORMAL),
-                        new RulePart('test_subrule_1', RulePart::TYPE_MAY_BE_ONCE_OR_MORE),
+                        new RulePart('test_subrule_1', RulePart::TYPE_MUST_BE_ONCE_OR_MORE),
                         new RulePart('d', RulePart::TYPE_NORMAL)
-                    ], 'a test_subrule_1* d'),
+                    ], 'a test_subrule_1+ d'),
+                    new Rule('test', [
+                        new RulePart('a', RulePart::TYPE_NORMAL),
+                        new RulePart('d', RulePart::TYPE_NORMAL)
+                    ], 'a d'),
                     new Rule('test_subrule_1', [new RulePart('b', RulePart::TYPE_NORMAL)], 'b'),
                     new Rule('test_subrule_1', [new RulePart('g', RulePart::TYPE_NORMAL)], 'g'),
                 ]
@@ -133,9 +136,8 @@ class GrammarRuleParserTest extends Unit
                 [
                     new Rule('test', [
                         new RulePart('a', RulePart::TYPE_NORMAL),
-                        new RulePart('l', RulePart::TYPE_NORMAL),
-                        new RulePart('l', RulePart::TYPE_MAY_BE_ONCE_OR_MORE)
-                    ], 'a l l*'),
+                        new RulePart('l', RulePart::TYPE_MUST_BE_ONCE_OR_MORE)
+                    ], 'a l+'),
                 ]
             ],
             '1 rule with can be once or more part' => [
@@ -143,9 +145,13 @@ class GrammarRuleParserTest extends Unit
                 [
                     new Rule('test', [
                         new RulePart('a', RulePart::TYPE_NORMAL),
-                        new RulePart('l', RulePart::TYPE_MAY_BE_ONCE_OR_MORE),
+                        new RulePart('l', RulePart::TYPE_MUST_BE_ONCE_OR_MORE),
                         new RulePart('d', RulePart::TYPE_NORMAL)
-                    ], 'a l* d'),
+                    ], 'a l+ d'),
+                    new Rule('test', [
+                        new RulePart('a', RulePart::TYPE_NORMAL),
+                        new RulePart('d', RulePart::TYPE_NORMAL)
+                    ], 'a d'),
                 ]
             ],
             'mega test' => [
@@ -166,17 +172,24 @@ class GrammarRuleParserTest extends Unit
                         'expression',
                         [
                             new RulePart('mulExpression', ''),
-                            new RulePart('expression_subrule_1', '*'),
+                            new RulePart('expression_subrule_1', '+'),
                         ],
-                        'mulExpression expression_subrule_1*'
+                        'mulExpression expression_subrule_1+'
                     ),
                     new Rule(
                         'expression',
                         [
                             new RulePart('mulExpression', ''),
-                            new RulePart('expression_subrule_2', '*'),
                         ],
-                        'mulExpression expression_subrule_2*'
+                        'mulExpression'
+                    ),
+                    new Rule(
+                        'expression',
+                        [
+                            new RulePart('mulExpression', ''),
+                            new RulePart('expression_subrule_2', '+'),
+                        ],
+                        'mulExpression expression_subrule_2+'
                     ),
                     new Rule(
                         'expression_subrule_1',
@@ -198,17 +211,24 @@ class GrammarRuleParserTest extends Unit
                         'mulExpression',
                         [
                             new RulePart('atom', ''),
-                            new RulePart('mulExpression_subrule_1', '*'),
+                            new RulePart('mulExpression_subrule_1', '+'),
                         ],
-                        'atom mulExpression_subrule_1*'
+                        'atom mulExpression_subrule_1+'
                     ),
                     new Rule(
                         'mulExpression',
                         [
                             new RulePart('atom', ''),
-                            new RulePart('mulExpression_subrule_2', '*'),
                         ],
-                        'atom mulExpression_subrule_2*'
+                        'atom'
+                    ),
+                    new Rule(
+                        'mulExpression',
+                        [
+                            new RulePart('atom', ''),
+                            new RulePart('mulExpression_subrule_2', '+'),
+                        ],
+                        'atom mulExpression_subrule_2+'
                     ),
                     new Rule(
                         'mulExpression_subrule_1',

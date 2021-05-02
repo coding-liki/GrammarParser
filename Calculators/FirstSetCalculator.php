@@ -62,7 +62,7 @@ class FirstSetCalculator
                 $part = array_shift($parts);
                 $nextSet = $this->calculate($part->getData());
                 array_push($set, ...$nextSet);
-                while ($part->getType() === RulePart::TYPE_MAY_BE_ONCE_OR_MORE){
+                while ($part->getType() === RulePart::TYPE_MUST_BE_ONCE_OR_MORE){
                     $part = array_shift($parts);
                     $nextSet = $this->calculate($part->getData());
                     array_push($set, ...$nextSet);
