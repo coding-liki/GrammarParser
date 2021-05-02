@@ -26,10 +26,7 @@ class GrammarRuleParser
             array_push($rules, ...$nextRules);
         }
 
-        $filtered = array_values(array_unique($rules));
-
-        print_r($filtered);
-        return $filtered;
+        return array_values(array_unique($rules));
     }
 
     private static function normalizeScript(string $rulesScript): string
