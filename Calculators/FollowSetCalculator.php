@@ -73,6 +73,12 @@ class FollowSetCalculator
 
     private function calculateForRule(Rule $rule, string $name): array
     {
+        if (in_array($rule, $this->visitedRules[$this->currentName], true)) {
+            return [];
+        }
+
+        $this->visitedRules[$this->currentName][] = $rule;
+
         $follow = [];
         $parts = $rule->findPartsByName($name);
         $lastRuleIndex = count($rule->getParts()) - 1;
