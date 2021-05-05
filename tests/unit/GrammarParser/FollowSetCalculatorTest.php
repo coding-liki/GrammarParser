@@ -102,11 +102,11 @@ class FollowSetCalculatorTest extends Unit
             ],
             'calculator new' => [
                 file_get_contents(__DIR__.'/../../../grammar/calculator_new.grr'),
-                'plusMinusPart',
+                'expression',
                 [
+                    '$',
                     'PLUS',
                     'MINUS',
-                    '$',
                     'R_P',
                 ]
             ]
