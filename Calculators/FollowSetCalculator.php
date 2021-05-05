@@ -13,7 +13,6 @@ class FollowSetCalculator
     private array $followSets = [];
 
     private array $visitedRules = [];
-    private string $currentName = '';
     private FirstSetCalculator $firstSetCalculator;
 
     /**
@@ -28,7 +27,7 @@ class FollowSetCalculator
     public function calculate(string $name, bool $root = true): array
     {
         if ($root) {
-            $this->currentName = $name;
+            $this->visitedRules = [];
         }
 
         if (!isset($this->visitedRules[$name])) {

@@ -1,0 +1,13 @@
+number,rule
+0,"S': expression;"
+1,"expression: mulExpression plusMinusPart+;"
+2,"expression: mulExpression;"
+3,"plusMinusPart: PLUS expression;"
+4,"plusMinusPart: MINUS expression;"
+5,"mulExpression: atom mulDivPart+;"
+6,"mulExpression: atom;"
+7,"mulDivPart: MUL mulExpression;"
+8,"mulDivPart: DIV mulExpression;"
+9,"atom: FLOAT_NUM;"
+10,"atom: INT_NUM;"
+11,"atom: L_P expression R_P;"
