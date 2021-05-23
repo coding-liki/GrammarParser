@@ -5,7 +5,7 @@ namespace CodingLiki\GrammarParser\Token;
 
 class Token
 {
-    public function __construct(private string $type, private string $value)
+    public function __construct(private string $type, private string $value, private int $position)
     {
     }
 
@@ -23,5 +23,13 @@ class Token
     public function getValue(): string
     {
         return $this->value;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 }
