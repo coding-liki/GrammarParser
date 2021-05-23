@@ -104,9 +104,9 @@ class FollowSetCalculatorTest extends Unit
                 file_get_contents(__DIR__.'/../../../grammar/calculator_new.grr'),
                 'plusMinusPart',
                 [
-                    '$',
                     'PLUS',
                     'MINUS',
+                    '$',
                     'R_P',
                 ]
             ]
